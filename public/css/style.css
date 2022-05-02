@@ -1,0 +1,27 @@
+body{
+    background-color: #E8ECEF;
+    /* margin:0;
+  padding:0;
+    height: 100vh;
+     */
+}
+
+.centered{
+    padding-top: 200px;
+    text-align: center;
+}
+
+.box{
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    
+    /* padding: 1% 2%; */
+    /* border-radius: 1px; */
+    /* border-style: solid; */
+}
+
+.card{
+    box-shadow: 5px 5px 10px;
+}
