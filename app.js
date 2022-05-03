@@ -2,8 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 // const encrypt = require("mongoose-encryption")
 const md5 = require("md5");
+const saultRounds = 10;
 
 
 const app = express();
@@ -58,13 +60,16 @@ app.route("/login")
         }
         else{
             if(data.length == 1){
-                if(data[0].password == md5(req.body.password)){
-                    res.send("Login Succesful!");
-                }
-                else{
-                    res.redirect("/");
-                }
-            
+                bcrypt.compare(req.body.password,data[0].password).then(result=>{
+                    if(result){
+                        res.send("Login Succesful!");
+                    }
+                    else{
+                        res.redirect("/");
+                    }
+                }).catch(err=>{
+                    console.log(err);
+                });
             }
             else{
                 res.redirect("/");
@@ -80,14 +85,19 @@ app.route("/register")
 .post((req,res)=>{
     console.log("User name" + req.body.email);
     console.log("User password" + req.body.password);
-    User.create({userName:req.body.email,
-    password:md5(req.body.password)},err=>{
-        if(err){
-            console.log(err);
-        }
-        else{
-            res.redirect("/");
-        }
+    bcrypt.hash(req.body.password,saultRounds).then(hash=>{
+
+        User.create({userName:req.body.email,
+            password:hash},err=>{
+                if(err){
+                    console.log(err);
+                }
+                else{
+                    res.redirect("/");
+                }
+            });
+
+    }).catch(err=>{
+        console.log(err);
     });
-    
-})
+});
